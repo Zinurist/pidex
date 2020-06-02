@@ -69,8 +69,8 @@ def main():
 
 
 if __name__ == '__main__':
-    if len(sys.argv) == 1:
-        import os
+    import os
+    if os.uname()[4][:3] == 'arm':
         os.putenv('SDL_VIDEODRIVER', 'fbcon')
         os.putenv('SDL_FBDEV', '/dev/fb1')
     main()
