@@ -1,8 +1,10 @@
 
+import time, os
+from controller import Actions as A
 
-def get_display():
+def get_display(size):
     from display import PygameDisplay as Display
-    return Display()
+    return Display(size)
 
 def get_audio():
     from audio import PygameAudio as Audio
@@ -29,8 +31,15 @@ def get_menu(dex, display, audio, camera):
 def main():
     print('Starting PokeDex')
     
+    if os.uname()[4][:3] == 'arm':
+        os.putenv('SDL_VIDEODRIVER', 'fbcon')
+        os.putenv('SDL_FBDEV', '/dev/fb1')
+        size = (0, 0)
+    else:
+        size = (480, 320)
+
     #output interfaces
-    display = get_display()
+    display = get_display(size)
     audio = get_audio()
     
     #input interfaces
@@ -47,8 +56,6 @@ def main():
     #display.preload_images(dex.get_image_files())
     #audio.preload_files(dex.get_sound_files())
     
-    import time
-    from controller import Actions as A
     start_time = time.time()
     while True:
         time.sleep(0.001)
@@ -69,10 +76,6 @@ def main():
 
 
 if __name__ == '__main__':
-    import os
-    if os.uname()[4][:3] == 'arm':
-        os.putenv('SDL_VIDEODRIVER', 'fbcon')
-        os.putenv('SDL_FBDEV', '/dev/fb1')
     main()
 
 

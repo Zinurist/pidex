@@ -25,11 +25,11 @@ class Display(object):
 
 class PygameDisplay(Display):
         
-    def __init__(self):
+    def __init__(self, size):
         pygame.display.init()
         pygame.font.init()
         pygame.mouse.set_cursor((8,8),(0,0),(0,0,0,0,0,0,0,0),(0,0,0,0,0,0,0,0))
-        self.screen = pygame.display.set_mode((480, 320))
+        self.screen = pygame.display.set_mode(size)
         self.fonts = [
             pygame.font.SysFont('Impact', 30, bold=False),
             pygame.font.SysFont('Impact', 15, bold=False),
