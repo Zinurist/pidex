@@ -56,6 +56,7 @@ def main():
     #display.preload_images(dex.get_image_files())
     #audio.preload_files(dex.get_sound_files())
     
+    print('Running PokeDex')
     start_time = time.time()
     while True:
         time.sleep(0.001)
