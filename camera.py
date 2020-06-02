@@ -13,6 +13,6 @@ class OpenCVCamera(Camera):
 
     def get_img(self):
         ret,frame = self.cap.read()
-        frame = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
-        frame = np.rot90(frame)
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        frame = np.rot90(frame, 3)
         return frame
