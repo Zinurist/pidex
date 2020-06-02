@@ -45,7 +45,7 @@ def main():
     
     #preload
     #display.preload_images(dex.get_image_files())
-    audio.preload_files(dex.get_sound_files())
+    #audio.preload_files(dex.get_sound_files())
     
     import time
     from controller import Actions as A
@@ -69,6 +69,10 @@ def main():
 
 
 if __name__ == '__main__':
+    if len(sys.argv) == 1:
+        import os
+        os.putenv('SDL_VIDEODRIVER', 'fbcon')
+        os.putenv('SDL_FBDEV', '/dev/fb1')
     main()
 
 

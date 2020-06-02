@@ -1,4 +1,8 @@
+
+import subprocess
+
 from controller import Actions as A
+
 
 class Menu(object):
     def __init__(self, dex, display, audio, camera):
@@ -23,6 +27,14 @@ class QuitMenu(Menu):
         self.quit = True
     def update(self, delta_time, actions): pass
     def render(self): pass
+
+class UpdateMenu(Menu):
+    def __init__(self, dex, display, audio, camera):
+        super().__init__(dex, display, audio, camera)
+    def update(self, delta_time, actions):
+        subprocess.run(['git', 'pull', 'origin', 'master'])
+        self.quit = True
+    def render(self): pass
         
 class MainMenu(Menu):
     def __init__(self, dex, display, audio, camera):
@@ -31,11 +43,12 @@ class MainMenu(Menu):
             DexScanner(dex, display, audio, camera),
             DexLister(dex, display, audio, camera),
             SettingsMenu(dex, display, audio, camera),
+            UpdateMenu(dex, display, audio, camera),
             QuitMenu(dex, display, audio, camera),
         ]
         
         self.menu_options = [
-            'Scan', self.dex.name, 'Settings', 'Poweroff',
+            'Scan', self.dex.name, 'Settings', 'Update', 'Poweroff',
         ]
         self.cursor = 0
         
@@ -189,9 +202,9 @@ class DexEntryLister(Menu):
         if A.MENU_OK in actions:
             self.audio.stop()
             if self.description_page == 0:
-                self.audio.play_wav(data['sound'])
+                self.audio.play_wav(self.data['sound'])
             elif self.description_page == 1:
-                self.audio.speak(data['description'])
+                self.audio.speak(self.data['description'])
         elif A.MENU_LEFT in actions:
             # if show text > back
             self.description_page -= 1

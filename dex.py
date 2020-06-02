@@ -1,4 +1,5 @@
 import sqlite3, os
+import urllib, io, gzip, tarfile
     
 
 class Dex(object):
@@ -54,7 +55,12 @@ class VeekunPokedex(Dex):
     
     def __init__(self, version='Black', language='English', load_info=True):
         super().__init__('PokeDex')
-        self.conn = sqlite3.connect('pokedex.sqlite')
+        self.db_file = 'pokedex.sqlite'
+        self.img_dir = 'pokemon/global-link/'
+        self.cry_dir = 'pokemon/cries/'
+
+        self._download()
+        self.conn = sqlite3.connect(self.db_file)
         #GET VERSIONS
         query = """SELECT versions.id, version_names.name
         FROM versions 
@@ -88,8 +94,8 @@ class VeekunPokedex(Dex):
         self.img_files = []
         self.cry_files = []
         for i in range(len(self)):
-            self.img_files.append('pokemon/global-link/%s.png' % (i+1))
-            self.cry_files.append('pokemon/cries/%s.ogg' % (i+1))
+            self.img_files.append(os.path.join(self.img_dir, '%s.png' % (i+1)) )
+            self.cry_files.append(os.path.join(self.cry_dir, '%s.ogg' % (i+1)) )
             
                 
     def get_image_files(self):
@@ -181,6 +187,52 @@ class VeekunPokedex(Dex):
         return len(cursor.fetchall())
 
 
+    def _download(self):
+        if not os.path.isfile(self.db_file):
+            zip_file = 'veekun-pokedex.sqlite.gz'
+            if not os.path.isfile(zip_file):
+                print('Downloading DB')
+                url = 'https://veekun.com/static/pokedex/downloads/veekun-pokedex.sqlite.gz'
+                response = urllib.request.urlopen(url)
+                f = open(zip_file, 'wb+')
+                f.write(response.read())
+                f.close()
+
+            print('Unzipping DB')
+            db_filedata = gzip.GzipFile(zip_file, mode='rb')
+            db_file = open(self.db_file, 'wb+')
+            db_file.write(db_filedata.read())
+            db_file.close()
+
+        if not os.path.isdir(self.img_dir):
+            zip_file = 'pokemon-global-link.tar.gz'
+            if not os.path.isfile(zip_file):
+                print('Downloading images')
+                url = 'https://veekun.com/static/pokedex/downloads/pokemon-global-link.tar.gz'
+                response = urllib.request.urlopen(url)
+                f = open(zip_file, 'wb+')
+                f.write(response.read())
+                f.close()
+
+            print('Unzipping images')
+            fileobj = tarfile.open(zip_file, mode='r:gz')
+            fileobj.extractall()
+            fileobj.close()
+
+        if not os.path.isdir(self.cry_dir):
+            zip_file = 'pokemon-cries.tar.gz'
+            if not os.path.isfile(zip_file):
+                print('Downloading cries')
+                url = 'https://veekun.com/static/pokedex/downloads/pokemon-cries.tar.gz'
+                response = urllib.request.urlopen(url)
+                f = open(zip_file, 'wb+')
+                f.write(response.read())
+                f.close()
+
+            print('Unzipping cries')
+            fileobj = tarfile.open(zip_file, mode='r:gz')
+            fileobj.extractall()
+            fileobj.close()
 
 
 

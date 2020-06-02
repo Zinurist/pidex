@@ -79,7 +79,7 @@ class PygameAudio(Audio):
     def preload_files(self, files):
         for filepath in files:
             if not os.path.isfile(filepath):
-                filepath = 'todo replacement'
+                continue
             data = pygame.mixer.Sound(filepath)
             self._audio_cache[filepath] = data
         
@@ -91,6 +91,8 @@ class PygameAudio(Audio):
         self.speak_service.speak(text)
     
     def play_wav(self, filepath):
+        if not os.path.isfile(filepath):
+            return
         if filepath in self._audio_cache:
             data = self._audio_cache[filepath]
         else:

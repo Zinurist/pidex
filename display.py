@@ -48,7 +48,7 @@ class PygameDisplay(Display):
     def preload_images(self, files):
         for filepath in files:
             if not os.path.isfile(filepath):
-                filepath = 'todo replacement'
+                filepath = 'unknown.png'
             img = pygame.image.load(filepath).convert()
             self._img_cache[filepath] = pygame.transform.scale(img, (180,180))
         
