@@ -77,17 +77,29 @@ class DexScanner(Menu):
     def __init__(self, dex, display, audio, camera):
         super().__init__(dex, display, audio, camera)
         self.entry_lister = DexEntryLister(dex, display, audio, camera, auto_speech=True)
+        self.fps = 5.0
+        self.delta_time = 1./self.fps + 1.
+        self.img = None
         
     def update(self, delta_time, actions):
+
+        self.delta_time += delta_time
+        if self.delta_time >= 1./self.fps:
+            self.img = self.camera.get_img()
+            self.delta_time -= 1./self.fps
+
         if A.MENU_OK in actions or A.MENU_RIGHT in actions:
-            index = self.scan()
-            self.dex.set_current_entry(index)
-            return self.swap_menu(self.entry_lister)
+            if self.img is not None: 
+                index = self.scan()
+                self.dex.set_current_entry(index)
+                return self.swap_menu(self.entry_lister)
         elif A.MENU_LEFT in actions:
             return self.previous_menu
             
     def render(self):
-        self.display.draw_text("Scanner", (10,10), (50,100,50))
+        #self.display.draw_text("Scanner", (10,10), (50,100,50))
+        if self.img is not None:
+            self.display.draw_image((0,0), self.img)
         
     def scan(self):
         return 50

@@ -82,5 +82,7 @@ class PygameDisplay(Display):
         pygame.draw.rect(self.screen, color, pygame.Rect(rect[0],rect[1],rect[2],rect[3]))
     
     def draw_image(self, pos, image):
+        if not isinstance(image, pygame.Surface):
+            image = pygame.surfarray.make_surface(image)
         self.screen.blit(image, pos)
     

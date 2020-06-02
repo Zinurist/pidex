@@ -1,4 +1,6 @@
 
+import cv2
+import numpy as np
 
 class Camera(object):
     def get_img(self):
@@ -6,6 +8,11 @@ class Camera(object):
         
 class OpenCVCamera(Camera):
     def __init__(self):
-        pass
+        self.cap = cv2.VideoCapture(0)
+        self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 1);
+
     def get_img(self):
-        pass
+        ret,frame = self.cap.read()
+        frame = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
+        frame = np.rot90(frame)
+        return frame
